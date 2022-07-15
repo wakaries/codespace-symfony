@@ -22,11 +22,11 @@ RUN pecl install mongodb && docker-php-ext-enable mongodb
 RUN pecl install redis && docker-php-ext-enable redis
 
 RUN pecl install xdebug && docker-php-ext-enable xdebug
-RUN echo 'zend_extension=xdebug' >> /usr/local/etc/php/php.ini
-RUN echo 'xdebug.mode=develop,debug' >> /usr/local/etc/php/php.ini
-RUN echo 'xdebug.client_host=host.docker.internal' >> /usr/local/etc/php/php.ini
-RUN echo 'xdebug.start_with_request=yes' >> /usr/local/etc/php/php.ini
-RUN echo 'session.save_path = "/tmp"' >> /usr/local/etc/php/php.ini
+#RUN echo 'zend_extension=xdebug' >> /usr/local/etc/php/php.ini
+#RUN echo 'xdebug.mode=develop,debug' >> /usr/local/etc/php/php.ini
+#RUN echo 'xdebug.client_host=host.docker.internal' >> /usr/local/etc/php/php.ini
+#RUN echo 'xdebug.start_with_request=yes' >> /usr/local/etc/php/php.ini
+#RUN echo 'session.save_path = "/tmp"' >> /usr/local/etc/php/php.ini
 
 RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
 RUN php composer-setup.php

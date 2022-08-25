@@ -1,26 +1,13 @@
-FROM php:8.1-apache
+FROM ubuntu:latest
 
-RUN echo "Europe/Berlin" > /etc/timezone && dpkg-reconfigure -f noninteractive tzdata
+RUN ln -s /usr/share/zoneinfo/Europe/Madrid /etc/localtime
 
-RUN apt-get update && apt-get install -y ca-certificates gnupg
-RUN curl -fsSL https://deb.nodesource.com/setup_16.x | bash -
+RUN apt update && apt upgrade -y && apt install -y curl git nodejs zip unzip libzip-dev libicu-dev nano cron
+RUN apt install software-properties-common apt-transport-https -y
 
-RUN apt-get update && apt-get upgrade -y && apt-get install -y git nodejs zip unzip libzip-dev libicu-dev nano
-
-
-RUN /usr/sbin/a2enmod rewrite && /usr/sbin/a2enmod headers && /usr/sbin/a2enmod expires
-
-RUN cp /usr/local/etc/php/php.ini-production /usr/local/etc/php/php.ini
-RUN pear config-set php_ini /usr/local/etc/php/php.ini
-
-RUN docker-php-ext-install \
-    zip \
-    intl \
-    pdo \
-    pdo_mysql
-
-RUN pecl install mongodb && docker-php-ext-enable mongodb
-RUN pecl install redis && docker-php-ext-enable redis
+RUN apt install php apache2 libapache2-mod-php composer php-common php-cli php-curl php-xml php-zip php-gd php-mysql php-mongodb php-redis -y
+#RUN a2enmod proxy_fcgi setenvif rewrite headers expires
+#RUN service apache2 start
 
 #RUN pecl install xdebug && docker-php-ext-enable xdebug
 #RUN echo 'zend_extension=xdebug' >> /usr/local/etc/php/php.ini
@@ -29,17 +16,10 @@ RUN pecl install redis && docker-php-ext-enable redis
 #RUN echo 'xdebug.start_with_request=yes' >> /usr/local/etc/php/php.ini
 #RUN echo 'session.save_path = "/tmp"' >> /usr/local/etc/php/php.ini
 
-# COPY --from=composer /usr/bin/composer /usr/local/bin/composer
-
-RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
-RUN php composer-setup.php
-RUN php -r "unlink('composer-setup.php');"
-RUN mv composer.phar /usr/local/bin/composer
-
 RUN curl -1sLf 'https://dl.cloudsmith.io/public/symfony/stable/setup.deb.sh' | bash
 RUN apt install symfony-cli
 
-COPY . /var/www/html
+
+#COPY . /var/www/html
 
 WORKDIR /var/www/html
-
